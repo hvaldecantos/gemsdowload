@@ -10,4 +10,4 @@ run("gem list --remote").each_line do |line|
   num += 1
 end
 file.close
-puts "#{num} gem names and versions were writen."
+puts "#{num} gem names and versions were written."
