@@ -2,18 +2,24 @@ require 'csv'
 require 'json'
 require 'yaml'
 require './run_command'
+require 'logger'
 
 num = 0
 gems = {}
 
+logger = Logger.new('logfile_top100.log')
 File.open("gems.txt").each_line do |line|
   gemname = line.split(/\s/).first.strip
-  gem_info = JSON.parse(run "curl https://rubygems.org/api/v1/gems/#{gemname}.json")
-  num +=1
-  gems.merge!({ gem_info["name"] => { downloads: gem_info["downloads"].to_i,
-                                      version: gem_info["version"],
-                                      src: gem_info["source_code_uri"]}})
-  break if num == 1000
+  begin
+    gem_info = JSON.parse(run "curl https://rubygems.org/api/v1/gems/#{gemname}.json")
+    num +=1
+    gems.merge!({ gem_info["name"] => { downloads: gem_info["downloads"].to_i,
+                                        version: gem_info["version"],
+                                        src: gem_info["source_code_uri"]}})
+    logger.info("#{num} gem info collected") if num == 1000
+  rescue => e
+    logger.error("Cannot clone #{gemname}: #{e}")
+  end
 end
 
 gems = gems.sort_by{|k, v| v[:downloads] }.reverse.first(100).to_h
