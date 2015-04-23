@@ -16,7 +16,7 @@ File.open("gems.txt").each_line do |line|
     gems.merge!({ gem_info["name"] => { downloads: gem_info["downloads"].to_i,
                                         version: gem_info["version"],
                                         src: gem_info["source_code_uri"]}})
-    logger.info("#{num} gem info collected") if num == 1000
+    logger.info("#{num} gem info collected") if num%100 == 0
   rescue => e
     logger.error("Cannot clone #{gemname}: #{e}")
   end
