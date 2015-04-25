@@ -4,6 +4,7 @@ require 'yaml'
 require './run_command'
 require 'logger'
 
+MAX_GEMS = 500
 num = 0
 gems = {}
 
@@ -16,13 +17,16 @@ File.open("gems.txt").each_line do |line|
     gems.merge!({ gem_info["name"] => { downloads: gem_info["downloads"].to_i,
                                         version: gem_info["version"],
                                         src: gem_info["source_code_uri"]}})
-    logger.info("#{num} gem info collected") if num%100 == 0
+    if num%100 == 0
+      gems = gems.sort_by{|k, v| v[:downloads] }.reverse.first(MAX_GEMS).to_h
+      logger.info("#{num} gem info collected")
+    end
+
   rescue => e
     logger.error("Cannot clone #{gemname}: #{e}")
   end
 end
-
-gems = gems.sort_by{|k, v| v[:downloads] }.reverse.first(100).to_h
+gems = gems.sort_by{|k, v| v[:downloads] }.reverse.first(MAX_GEMS).to_h
 file = File.open("gems.yml", "w")
 file.write( gems.to_yaml)
 file.close
