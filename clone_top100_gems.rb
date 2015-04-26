@@ -5,7 +5,7 @@ require 'logger'
 
 begin
   cwd = Dir.getwd
-  gems = YAML.load(File.open("gems.yml"))
+  gems = YAML.load(File.open("gems.yaml"))
   logger = Logger.new('logfile_clone.log')
 
   Dir.mkdir(cwd + '/../clonedgems/')
