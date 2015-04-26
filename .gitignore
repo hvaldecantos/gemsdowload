@@ -1,6 +1,7 @@
 *.sh
 *.output
 *.yml
+*.yaml
 *.csv
 *.txt
 *.log
